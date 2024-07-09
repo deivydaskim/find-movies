@@ -2,8 +2,9 @@ import { useState } from 'react';
 
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
+import MediaList from '../components/MediaList';
 
-const Home = () => {
+const Home: React.FC = () => {
   const [tabIndex, setTabIndex] = useState(0);
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
@@ -44,20 +45,22 @@ const Home = () => {
           </div>
           {tabIndex === 0 && (
             <div className="">
-              <h2>Movies list</h2>
+              <MediaList resource="movie/now_playing" />
             </div>
           )}
           {tabIndex === 1 && (
             <div className="">
-              <h2>Series list</h2>
+              <MediaList resource="tv/airing_today" />
             </div>
           )}
         </div>
       </section>
       <section className="mt-14">
-        <h1 className="headline-l text-yellow-350">Premiers and announcments</h1>
+        <h1 className="headline-l text-yellow-350">
+          Premiers and announcments
+        </h1>
         <div>
-          <h2>Premiers and announcments List</h2>
+          <MediaList resource="movie/upcoming" />
         </div>
       </section>
     </>

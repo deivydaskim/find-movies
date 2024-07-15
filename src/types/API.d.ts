@@ -1,34 +1,37 @@
-export interface FeaturedResult<T> {
+interface MediaResult<T> {
+  dates?: {
+    maximum: string;
+    minimum: string;
+  };
   page: number;
   results: T[];
   total_pages: number;
   total_results: number;
 }
 
-export interface Media {
+interface Base {
   adult: boolean;
-  backdrop_path: string | null;
+  backdrop_path: string;
+  genre_ids: number[];
   id: number;
   original_language: string;
   overview: string;
-  poster_path: string | null;
-  media_type: 'movie' | 'tv';
-  genre_ids: number[];
   popularity: number;
+  poster_path: string;
   vote_average: number;
   vote_count: number;
 }
 
-export interface Movie extends Media {
-  title: string;
+interface Movie extends Base {
   original_title: string;
   release_date: string;
+  title: string;
   video: boolean;
 }
 
-export interface TV extends Media {
-  name: string;
-  original_name: string;
+interface TV extends Base {
   first_air_date: string;
+  name: string;
   origin_country: string[];
+  original_name: string;
 }

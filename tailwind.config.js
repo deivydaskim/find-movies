@@ -8,6 +8,9 @@ export default {
           350: '#FDD835',
         },
       },
+      width: {
+        'custom-calc': 'calc(100% + 10rem)',
+      },
     },
   },
   plugins: [
@@ -31,6 +34,7 @@ export default {
           'font-size': '40px',
           'letter-spacing': '0.25px',
           'text-transform': 'uppercase',
+          'line-height': '40px'
         },
         '.headline-l': {
           'font-weight': '700',

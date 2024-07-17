@@ -9,3 +9,23 @@ body {
   font-family: 'Lato', sans-serif;
   color: white;
 }
+
+/* Scrollbar settings*/
+::-webkit-scrollbar {
+  height: 10px;
+  width: 15px;
+}
+
+::-webkit-scrollbar-track {
+  background: #111;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

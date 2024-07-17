@@ -83,7 +83,7 @@ const MediaList: React.FC<MediaListProps> = ({ resource }) => {
   }
 
   return (
-    <ul ref={containerRef} className="h-96 my-10 flex overflow-x-scroll gap-5">
+    <ul ref={containerRef} className="w-custom-calc my-10 flex overflow-x-scroll gap-5">
       {mediaData!.results.map((result) => (
         <li key={result.id}>
           <div className="relative mb-3 w-[185px] h-[278px]">

@@ -1,12 +1,20 @@
 import { useEffect, useState, useRef } from 'react';
+import { Link } from 'react-router-dom';
+
 import { getMedia } from '../api/MoviesAPI';
 import { getTitle } from '../utils/utils';
-
+import Spinner from './SpinnerLoading';
 import star from '../assets/icons/star-icon.svg';
 
 interface MediaListProps {
   resource: 'movie/now_playing' | 'movie/upcoming' | 'tv/airing_today';
 }
+
+const getResourceType = (
+  resource: MediaListProps['resource']
+): 'movie' | 'series' => {
+  return resource.startsWith('movie') ? 'movie' : 'series';
+};
 
 const MediaList: React.FC<MediaListProps> = ({ resource }) => {
   const [mediaData, setMediaData] = useState<MediaResult<Movie | TV> | null>(
@@ -22,7 +30,6 @@ const MediaList: React.FC<MediaListProps> = ({ resource }) => {
     const fetchData = async () => {
       setLoading(true);
       setError(null);
-
       try {
         const data = await getMedia(page, resource);
 
@@ -82,36 +89,40 @@ const MediaList: React.FC<MediaListProps> = ({ resource }) => {
     return <div className="h-96">Error: {error.message}</div>;
   }
 
-  return (
-    <ul ref={containerRef} className="w-custom-calc my-10 flex overflow-x-scroll gap-5">
-      {mediaData!.results.map((result) => (
-        <li key={result.id}>
-          <div className="relative mb-3 w-[185px] h-[278px]">
-            {result.poster_path ? (
-              <img
-                className="rounded-lg h-full object-cover"
-                src={`https://image.tmdb.org/t/p/w185/${result.poster_path}`}
-                alt={getTitle(result)}
-              />
-            ) : (
-              <div className="rounded-lg w-full h-full pt-10 bg-slate-900">
-                <p className="text-center text-slate-400">No image</p>
-              </div>
-            )}
+  const resourceType = getResourceType(resource);
 
-            <div className="h-10 w-20 absolute bg-black rounded-se-lg bottom-0 flex justify-evenly items-center">
-              <img className="w-6" src={star} alt="Rating star" />
-              <p>{result.vote_average.toFixed(1)}</p>
+  return (
+    <ul ref={containerRef} className="my-10 flex overflow-x-scroll gap-5">
+      {mediaData!.results.map((result) => (
+        <Link key={result.id} to={`${resourceType}/${result.id}`}>
+          <li>
+            <div className="relative mb-3 w-[185px] h-[278px]">
+              {result.poster_path ? (
+                <img
+                  className="rounded-lg h-full object-cover"
+                  src={`https://image.tmdb.org/t/p/w185/${result.poster_path}`}
+                  alt={getTitle(result)}
+                />
+              ) : (
+                <div className="rounded-lg w-full h-full pt-10 bg-slate-900">
+                  <p className="text-center text-slate-400">No image</p>
+                </div>
+              )}
+
+              <div className="h-10 w-20 absolute bg-black rounded-se-lg bottom-0 flex justify-evenly items-center">
+                <img className="w-6" src={star} alt="Rating star" />
+                <p>{result.vote_average.toFixed(1)}</p>
+              </div>
             </div>
-          </div>
-          <h3 className="body-2 text-center max-w-[185px] text-wrap">
-            {getTitle(result)}
-          </h3>
-        </li>
+            <h3 className="body-2 text-center max-w-[185px] text-wrap">
+              {getTitle(result)}
+            </h3>
+          </li>
+        </Link>
       ))}
       {loading && (
         <li className="relative right-3 self-center">
-          <span>Loading...</span>
+          <Spinner />
         </li>
       )}
     </ul>

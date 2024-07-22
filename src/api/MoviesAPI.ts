@@ -29,24 +29,7 @@ const getMedia = async (page = 1, resource: string) => {
 const getMediaDetails = async (resource: string) => {
   try {
     const response = await fetch(
-      `${BASE_URL}/${resource}?language=en-US`,
-      options
-    );
-    if (!response.ok) {
-      throw new Error(response.statusText);
-    }
-    const data: MovieDetails = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error while fetching:', error);
-    throw error;
-  }
-};
-
-const getMediaCrew = async (resource: string) => {
-  try {
-    const response = await fetch(
-      `${BASE_URL}/${resource}/credits?language=en-US`,
+      `${BASE_URL}/${resource}?append_to_response=credits`,
       options
     );
     if (!response.ok) {
@@ -60,4 +43,4 @@ const getMediaCrew = async (resource: string) => {
   }
 };
 
-export { getMedia, getMediaDetails, getMediaCrew };
+export { getMedia, getMediaDetails };

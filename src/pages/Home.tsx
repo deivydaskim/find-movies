@@ -3,7 +3,7 @@ import MediaList from '../components/MediaList';
 
 const Home: React.FC = () => {
   return (
-    <>
+    <div className='lg:px-28 px-6'>
       <section className="mt-14">
         <h1 className="headline-l text-yellow-350">Featured Today</h1>
         <div>
@@ -18,7 +18,7 @@ const Home: React.FC = () => {
           <MediaList resource="movie/upcoming" />
         </div>
       </section>
-    </>
+    </div>
   );
 };
 

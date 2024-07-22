@@ -8,9 +8,6 @@ export default {
           350: '#FDD835',
         },
       },
-      width: {
-        'custom-calc': 'calc(100% + 10rem)',
-      },
     },
   },
   plugins: [

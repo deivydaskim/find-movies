@@ -1,11 +1,14 @@
+import { Link } from 'react-router-dom';
 import logo from '../assets/icons/logo.svg';
 import searchIcon from '../assets/icons/search-icon.svg';
 
 const Header = () => {
   return (
-    <header className="flex gap-10 items-center">
+    <header className="flex gap-10 items-center  lg:px-28 px-6">
       <div>
-        <img src={logo} alt="Find movies logo" />
+        <Link to={`/`}>
+          <img src={logo} alt="Find movies logo" />
+        </Link>
       </div>
       <div className="flex-1 relative">
         <input
@@ -14,7 +17,7 @@ const Header = () => {
           type="text"
         />
         <button className="h-7 w-7 absolute left-2 top-1/2 -translate-y-1/2">
-          <img className='opacity-70' src={searchIcon} alt="Search icon" />
+          <img className="opacity-70" src={searchIcon} alt="Search icon" />
         </button>
       </div>
     </header>

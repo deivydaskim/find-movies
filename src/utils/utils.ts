@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export const isMovie = (
-  media: MovieDetails | SeriesDetails
+  media: MovieDetails | SeriesDetails | SearchResult
 ): media is MovieDetails => {
   return media !== undefined && 'title' in media;
 };
@@ -10,7 +10,10 @@ export const getTitle = (media: any) => {
 };
 
 export const getYear = (media: any) => {
-  const year = isMovie(media) ? media.release_date : media.last_air_date;
+  const year = isMovie(media) ? media.release_date : media.first_air_date;
+  if (!year || year === '') {
+    return 'Unknown date';
+  }
   return new Date(year).getFullYear();
 };
 
@@ -30,3 +33,15 @@ export const formatDate = (dateString: string) => {
   };
   return new Intl.DateTimeFormat('en-US', options).format(date);
 };
+
+export function debounce<T extends (...args: any[]) => void>(
+  func: T,
+  wait: number
+): (...args: Parameters<T>) => void {
+  let timeout: ReturnType<typeof setTimeout>;
+
+  return function (...args: Parameters<T>): void {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), wait);
+  };
+}

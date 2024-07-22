@@ -43,4 +43,21 @@ const getMediaDetails = async (resource: string) => {
   }
 };
 
-export { getMedia, getMediaDetails };
+const getSearchResults = async (query: string) => {
+  try {
+    const response = await fetch(
+      `${BASE_URL}/search/multi?query=${query}`,
+      options
+    );
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error while fetching:', error);
+    throw error;
+  }
+};
+
+export { getMedia, getMediaDetails, getSearchResults };

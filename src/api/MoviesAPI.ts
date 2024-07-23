@@ -1,63 +1,44 @@
-const API_KEY = import.meta.env.VITE_API_KEY;
+const ACCESS_TOKEN = import.meta.env.VITE_ACCESS_TOKEN;
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-const options = {
+const defaultOptions = {
   method: 'GET',
   headers: {
     accept: 'application/json',
-    Authorization: `Bearer ${API_KEY}`,
+    Authorization: `Bearer ${ACCESS_TOKEN}`,
   },
 };
 
-const getMedia = async (page = 1, resource: string) => {
+const fetchData = async <T>(
+  url: string,
+  options = defaultOptions
+): Promise<T> => {
   try {
-    const response = await fetch(
-      `${BASE_URL}/${resource}?language=en-US&page=${page}`,
-      options
-    );
+    const response = await fetch(url, options);
     if (!response.ok) {
       throw new Error(response.statusText);
     }
-    const data: MediaResult<Movie | TV> = await response.json();
+    const data: T = await response.json();
     return data;
   } catch (error) {
     console.error('Error while fetching:', error);
     throw error;
   }
+};
+
+const getMedia = async (page = 1, resource: string) => {
+  const url = `${BASE_URL}/${resource}?language=en-US&page=${page}`;
+  return fetchData<MediaResult<Movie | TV>>(url);
 };
 
 const getMediaDetails = async (resource: string) => {
-  try {
-    const response = await fetch(
-      `${BASE_URL}/${resource}?append_to_response=credits`,
-      options
-    );
-    if (!response.ok) {
-      throw new Error(response.statusText);
-    }
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error while fetching:', error);
-    throw error;
-  }
+  const url = `${BASE_URL}/${resource}?append_to_response=credits`;
+  return fetchData(url);
 };
 
 const getSearchResults = async (query: string) => {
-  try {
-    const response = await fetch(
-      `${BASE_URL}/search/multi?query=${query}`,
-      options
-    );
-    if (!response.ok) {
-      throw new Error(response.statusText);
-    }
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error while fetching:', error);
-    throw error;
-  }
+  const url = `${BASE_URL}/search/multi?query=${query}`;
+  return fetchData(url);
 };
 
 export { getMedia, getMediaDetails, getSearchResults };

@@ -3,20 +3,21 @@ import { Link } from 'react-router-dom';
 
 import logo from '../assets/icons/logo.svg';
 import searchIcon from '../assets/icons/search-icon.svg';
-import SearchList from './SearchResults';
+import SearchResults from './SearchResults';
 import { getSearchResults } from '../api/MoviesAPI';
 import { debounce } from '../utils/utils';
 
-const Header = () => {
+const Header: React.FC = () => {
   const [searchData, setSearchData] = useState<Search | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error>();
+  const [error, setError] = useState<Error | null>(null);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleSearch = async () => {
     const inputValue = inputRef.current!.value;
     setLoading(true);
+    setError(null);
 
     if (inputValue.length === 0) {
       setSearchData(null);
@@ -25,7 +26,7 @@ const Header = () => {
     }
     try {
       const search = await getSearchResults(inputValue);
-      setSearchData(search);
+      setSearchData(search as Search);
     } catch (error) {
       setError(error as Error);
     } finally {
@@ -59,14 +60,12 @@ const Header = () => {
         <button className="h-7 w-7 absolute left-2 top-1/2 -translate-y-1/2">
           <img className="opacity-70" src={searchIcon} alt="Search icon" />
         </button>
-        {
-          <SearchList
-            resetSearch={resetSearch}
-            data={searchData}
-            loading={loading}
-            error={error}
-          />
-        }
+        <SearchResults
+          resetSearch={resetSearch}
+          data={searchData}
+          loading={loading}
+          error={error}
+        />
       </div>
     </header>
   );

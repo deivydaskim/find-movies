@@ -3,12 +3,12 @@ import { getTitle, getYear, isMovie } from '../utils/utils';
 
 interface MediaListProps {
   loading: boolean;
-  error: Error | undefined;
+  error: Error | null;
   data: Search | null;
   resetSearch: () => void;
 }
 
-const SearchList: React.FC<MediaListProps> = ({
+const SearchResults: React.FC<MediaListProps> = ({
   loading,
   error,
   data,
@@ -29,10 +29,10 @@ const SearchList: React.FC<MediaListProps> = ({
 
   return (
     <div className="absolute z-10 rounded-sm top-11 w-full bg-[#212121]">
-      {loading && <p className="text-gray-400 p-2">Loading</p>}
+      {loading && <p className="text-gray-400 p-2">Loading...</p>}
       {error && <p className="text-gray-400 p-2">Something went wrong...</p>}
       {data && !loading && (
-        <ul className='max-h-80 overflow-y-scroll'>
+        <ul className="max-h-80 overflow-y-scroll">
           {filteredResults.length === 0 ? (
             <p className="text-gray-400 p-2">Can't find media</p>
           ) : (
@@ -74,4 +74,4 @@ const SearchList: React.FC<MediaListProps> = ({
   );
 };
 
-export default SearchList;
+export default SearchResults;

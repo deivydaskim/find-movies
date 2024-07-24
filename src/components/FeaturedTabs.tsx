@@ -5,9 +5,13 @@ import TabButton from './TabButton';
 
 const FeaturedTabs: React.FC = () => {
   const [tabIndex, setTabIndex] = useState(0);
+  const [seriesRendered, setSeriesRendered] = useState(false);
 
   const handleTabClick = (index: number) => {
     setTabIndex(index);
+    if (index === 1 && seriesRendered === false) {
+      setSeriesRendered(true);
+    }
   };
 
   return (
@@ -27,9 +31,11 @@ const FeaturedTabs: React.FC = () => {
       <div className={tabIndex === 0 ? 'block' : 'hidden'}>
         <MediaList resource="movie/now_playing" />
       </div>
-      <div className={tabIndex === 1 ? 'block' : 'hidden'}>
-        <MediaList resource="tv/airing_today" />
-      </div>
+      {seriesRendered && (
+        <div className={tabIndex === 1 ? 'block' : 'hidden'}>
+          <MediaList resource="tv/airing_today" />
+        </div>
+      )}
     </>
   );
 };

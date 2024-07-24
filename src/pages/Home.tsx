@@ -2,7 +2,7 @@ import { useNavigation } from 'react-router-dom';
 
 import FeaturedTabs from '../components/FeaturedTabs';
 import MediaList from '../components/MediaList';
-import Spinner from '../components/SpinnerLoading';
+import Spinner from '../components/Spinner';
 
 const Home: React.FC = () => {
   const navigation = useNavigation();

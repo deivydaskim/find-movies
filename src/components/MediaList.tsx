@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import { getMedia } from '../services/MoviesAPI';
 import { getTitle } from '../utils/utils';
-import Spinner from './SpinnerLoading';
+import Spinner from './Spinner';
 import star from '../assets/icons/star-icon.svg';
 import errorLogo from '../assets/icons/plug-error-illustration.svg';
 

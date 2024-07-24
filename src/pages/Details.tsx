@@ -1,16 +1,16 @@
-import React from 'react';
+import { useLoaderData } from 'react-router-dom';
+
 import starIcon from '../assets/icons/star-icon.svg';
 import { formatDate, formatMinutes, getTitle, getYear } from '../utils/utils';
 
-interface MediaListProps {
-  mediaDetails: MovieDetails | SeriesDetails;
-}
+type MediaDetails = MovieDetails | SeriesDetails;
 
-const MediaDetails: React.FC<MediaListProps> = ({ mediaDetails }) => {
+const Details = () => {
+  const mediaDetails: MediaDetails = useLoaderData() as MediaDetails;
+
   const isMovie = 'title' in mediaDetails;
   const title = getTitle(mediaDetails);
   const year = getYear(mediaDetails);
-
   const runtimeOrSeasons = isMovie
     ? formatMinutes(mediaDetails.runtime)
     : `${mediaDetails.seasons.length} seasons`;
@@ -113,4 +113,5 @@ const MediaDetails: React.FC<MediaListProps> = ({ mediaDetails }) => {
     </>
   );
 };
-export default MediaDetails;
+
+export default Details;

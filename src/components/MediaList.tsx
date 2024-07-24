@@ -1,10 +1,11 @@
 import { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
-import { getMedia } from '../api/MoviesAPI';
+import { getMedia } from '../services/MoviesAPI';
 import { getTitle } from '../utils/utils';
 import Spinner from './SpinnerLoading';
 import star from '../assets/icons/star-icon.svg';
+import errorLogo from '../assets/icons/plug-error-illustration.svg';
 
 interface MediaListProps {
   resource: 'movie/now_playing' | 'movie/upcoming' | 'tv/airing_today';
@@ -23,8 +24,9 @@ const MediaList: React.FC<MediaListProps> = ({ resource }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [page, setPage] = useState(1);
-
   const containerRef = useRef<HTMLUListElement>(null);
+
+  const resourceType = getResourceType(resource);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -82,19 +84,24 @@ const MediaList: React.FC<MediaListProps> = ({ resource }) => {
   }, [loading]);
 
   if (loading && !mediaData) {
-    return <div className="h-96">Loading...</div>;
+    return <Skeleton />;
   }
 
   if (error) {
-    return <div className="h-96">Error: {error.message}</div>;
+    return <Error />;
   }
 
-  const resourceType = getResourceType(resource);
-
   return (
-    <ul ref={containerRef} className="my-10 flex overflow-x-scroll gap-5">
+    <ul
+      ref={containerRef}
+      className="my-9 flex overflow-x-scroll overflow-y-hidden gap-5"
+    >
       {mediaData!.results.map((result) => (
-        <Link key={result.id} to={`${resourceType}/${result.id}`}>
+        <Link
+          className="first:ml-1 block hover:scale-105 transition-transform duration-200 ease-linear my-2"
+          key={result.id}
+          to={`${resourceType}/${result.id}`}
+        >
           <li>
             <div className="relative mb-3 w-[185px] h-[278px]">
               {result.poster_path ? (
@@ -109,7 +116,7 @@ const MediaList: React.FC<MediaListProps> = ({ resource }) => {
                 </div>
               )}
 
-              <div className="h-10 w-20 absolute bg-black rounded-se-lg bottom-0 flex justify-evenly items-center">
+              <div className="h-10 w-20 absolute bg-black rounded-se-lg -left-[1px] -bottom-[1px] flex justify-evenly items-center">
                 <img className="w-6" src={star} alt="Rating star" />
                 <p>{result.vote_average.toFixed(1)}</p>
               </div>
@@ -126,6 +133,34 @@ const MediaList: React.FC<MediaListProps> = ({ resource }) => {
         </li>
       )}
     </ul>
+  );
+};
+
+const Skeleton = () => {
+  return (
+    <ul className="my-11 flex gap-5 overflow-hidden">
+      {Array.from({ length: 10 }).map((_, index) => (
+        <li className="first:ml-1" key={index}>
+          <div className="w-[185px] h-[278px] mb-3 rounded-lg bg-gray-700 animate-pulse"></div>
+          <div className="w-[185px] h-6 mb-9 rounded-lg bg-gray-700 animate-pulse"></div>
+        </li>
+      ))}
+    </ul>
+  );
+};
+
+const Error = () => {
+  return (
+    <div className="h-96 pl-4 pt-10 flex flex-col max-w-56 m-auto items-center gap-3 body">
+      <h2 className="text-gray-200 text-center">Something went wrong...</h2>
+      <img className="text-center" src={errorLogo} alt="" />
+      <button
+        className="px-3 py-1 rounded-md bg-blue-950 w-max"
+        onClick={() => window.location.reload()}
+      >
+        Try reload page
+      </button>
+    </div>
   );
 };
 

@@ -16,10 +16,14 @@ const fetchData = async <T>(
   try {
     const response = await fetch(url, options);
     if (!response.ok) {
-      throw new Error(response.statusText);
+      const errorText = await response.json();
+      const error: FetchError = new Error(
+        errorText.status_message || 'Unknown error occurred'
+      );
+      error.status = response.status;
+      throw error;
     }
-    const data: T = await response.json();
-    return data;
+    return response.json();
   } catch (error) {
     console.error('Error while fetching:', error);
     throw error;
@@ -31,14 +35,9 @@ const getMedia = async (page = 1, resource: string) => {
   return fetchData<MediaResult<Movie | TV>>(url);
 };
 
-const getMediaDetails = async (resource: string) => {
-  const url = `${BASE_URL}/${resource}?append_to_response=credits`;
-  return fetchData(url);
-};
-
 const getSearchResults = async (query: string) => {
   const url = `${BASE_URL}/search/multi?query=${query}`;
   return fetchData(url);
 };
 
-export { getMedia, getMediaDetails, getSearchResults };
+export { getMedia, getSearchResults, fetchData };

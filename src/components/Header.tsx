@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import logo from '../assets/icons/logo.svg';
 import searchIcon from '../assets/icons/search-icon.svg';
 import SearchResults from './SearchResults';
-import { getSearchResults } from '../api/MoviesAPI';
+import { getSearchResults } from '../services/MoviesAPI';
 import { debounce } from '../utils/utils';
 
 const Header: React.FC = () => {

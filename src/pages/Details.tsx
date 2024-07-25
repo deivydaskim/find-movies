@@ -6,7 +6,7 @@ import { formatDate, formatMinutes, getTitle, getYear } from '../utils/utils';
 type MediaDetails = MovieDetails | SeriesDetails;
 
 const Details = () => {
-  const mediaDetails: MediaDetails = useLoaderData() as MediaDetails;
+  const mediaDetails = useLoaderData() as MediaDetails;
 
   const isMovie = 'title' in mediaDetails;
   const title = getTitle(mediaDetails);
@@ -75,11 +75,17 @@ const Details = () => {
       </section>
       <section className="lg:px-28 px-6 my-12 flex md:flex-row flex-col gap-8">
         <div className="md:self-auto self-center min-w-60">
-          <img
-            src={`https://image.tmdb.org/t/p/w300/${mediaDetails.poster_path}`}
-            alt={title}
-            className="rounded-xl w-64"
-          />
+          {mediaDetails.poster_path ? (
+            <img
+              src={`https://image.tmdb.org/t/p/w300/${mediaDetails.poster_path}`}
+              alt={title}
+              className="rounded-xl w-64"
+            />
+          ) : (
+            <div className="rounded-xl w-64 gradient-gray h-96 leading-[24rem] headline-m text-center select-none opacity-70">
+              NO IMAGE
+            </div>
+          )}
         </div>
         <div className="space-y-6">
           <ul className="flex gap-3 body-2 text-gray-300 flex-wrap">

@@ -19,16 +19,22 @@ const getResourceType = (
 
 const MediaList: React.FC<MediaListProps> = ({ resource }) => {
   const [mediaData, setMediaData] = useState<MediaResult<Movie | TV> | null>(
-    null
+    JSON.parse(sessionStorage.getItem(resource) || 'null')
   );
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!mediaData);
   const [error, setError] = useState<Error | null>(null);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(() => {
+    const savedPage = sessionStorage.getItem(`${resource}-page`);
+    return savedPage ? parseInt(savedPage, 10) : 1;
+  });
   const containerRef = useRef<HTMLUListElement>(null);
 
   const resourceType = getResourceType(resource);
 
   useEffect(() => {
+    if (mediaData && page == 1) {
+      return;
+    }
     const fetchData = async () => {
       setLoading(true);
       setError(null);
@@ -36,21 +42,26 @@ const MediaList: React.FC<MediaListProps> = ({ resource }) => {
         const data = await getMedia(page, resource);
 
         setMediaData((prevData) => {
-          if (!prevData) return data;
+          if (!prevData) {
+            const newData = { ...data, page };
+            sessionStorage.setItem(resource, JSON.stringify(newData));
+            return newData;
+          }
 
           const uniqueResults = data.results.filter(
             (item) =>
               !prevData.results.some((prevItem) => prevItem.id === item.id)
           );
 
-          return {
+          const newData = {
             ...data,
-            results:
-              page === 1
-                ? data.results
-                : [...prevData.results, ...uniqueResults],
+            results: [...prevData.results, ...uniqueResults],
+            page,
           };
+          sessionStorage.setItem(resource, JSON.stringify(newData));
+          return newData;
         });
+        sessionStorage.setItem(`${resource}-page`, page.toString());
       } catch (error) {
         setError(error as Error);
       } finally {
@@ -61,27 +72,31 @@ const MediaList: React.FC<MediaListProps> = ({ resource }) => {
     fetchData();
   }, [page, resource]);
 
-  useEffect(() => {
-    const container = containerRef.current;
+useEffect(() => {
+  const container = containerRef.current;
 
-    const handleScroll = () => {
-      if (
-        container &&
-        container.scrollLeft + container.clientWidth + 5 >=
-          container.scrollWidth
-      ) {
-        if (!loading) {
-          setPage((prevPage) => prevPage + 1);
-        }
-      }
-    };
+  const handleScroll = () => {
+    if (!container) return;
 
-    container?.addEventListener('scroll', handleScroll);
+    sessionStorage.setItem(`${resource}-scrollPosition`, container.scrollLeft.toString());
 
-    return () => {
-      container?.removeEventListener('scroll', handleScroll);
-    };
-  }, [loading]);
+    if (container.scrollLeft + container.clientWidth + 5 >= container.scrollWidth && !loading) {
+      setPage(prevPage => prevPage + 1);
+    }
+  };
+
+  const savedScrollPosition = sessionStorage.getItem(`${resource}-scrollPosition`);
+  if (savedScrollPosition && container) {
+    container.scrollLeft = parseInt(savedScrollPosition, 10);
+  }
+
+  container?.addEventListener('scroll', handleScroll);
+
+  return () => {
+    container?.removeEventListener('scroll', handleScroll);
+  };
+}, [loading, resource]);
+
 
   if (loading && !mediaData) {
     return <Skeleton />;

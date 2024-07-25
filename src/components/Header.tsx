@@ -44,7 +44,7 @@ const Header: React.FC = () => {
   return (
     <header className="flex flex-col sm:flex-row sm:gap-10 gap-3 items-center lg:px-28 px-6">
       <div>
-        <Link to={`/`}>
+        <Link onClick={() => sessionStorage.clear()} to={`/`}>
           <img src={logo} alt="Find movies logo" />
         </Link>
       </div>
